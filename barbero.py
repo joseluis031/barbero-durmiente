@@ -25,7 +25,7 @@ def barbero():  #funcion del barbero
         silla.acquire()     #el barbero espera a que el cliente se siente
         cortar.release()        #el barbero puede cortar
         barbero = 1     #el barbero esta cortando
-        print("Barbero esta cortando el pelo al cliente {0}".format(lista_cortes))      
+        print("\nBarbero esta cortando el pelo al cliente {}".format(lista_cortes))      
         time.sleep(2)       #el barbero tarda 2 segundos en cortar
         cortado.release()    #el cliente puede irse
         barbero = 0    #el barbero termino de cortar
@@ -54,16 +54,16 @@ def cliente():  #funcion del cliente
             print("\nCliente {} se va de la barberia con corte nuevo".format(lista_cortes))
             mutex.release()   #se libera el mutex
         else:   #si hay mas de 3 clientes en la barberia
-            lista_cortes += 1   #se suma un cliente
+            lista_cortes += 1   
             mutex.release()  #se libera el mutex
             print("\nCliente {} se va de la barberia porque esta llena".format(lista_cortes))
-            time.sleep(5)   #el cliente espera  segundos y vuelve a intentar entrar
+            time.sleep(5)   #el cliente espera 5 segundos y vuelve a intentar entrar
             if barbero == 0:
                 clientes == 0
                 cliente()
-#quiero crear como una lista de espera que se vaya vaciando cuando el barbero va cortando el pelo a los clientes
-#y que cuando el barbero termine de cortar el pelo a un cliente, el siguiente cliente de la lista de espera se siente en la silla
-#y el barbero lo atiende
+            else:
+                print("\nCliente {} se va de la barberia porque esta llena".format(lista_cortes))
+
 
 
 def main():
@@ -76,7 +76,7 @@ def main():
     while True: 
         hilo_cliente = threading.Thread(target=cliente)   #se crea el hilo del cliente
         hilo_cliente.start()    #se inicia el hilo del cliente
-        time.sleep(5)   #el cliente llega cada 10 segundos
+        time.sleep(5)   #el cliente llega cada 5 segundos
 
 if __name__ == "__main__":
     main()
