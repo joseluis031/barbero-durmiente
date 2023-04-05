@@ -13,17 +13,19 @@ mutex = threading.Semaphore(1)  #para controlar el numero de clientes
 #variables
 clientes = 0    #numero de clientes en la barberia
 barbero = 0 #estado del barbero
+lista_cortes = 0
 
 def barbero():  #funcion del barbero
 
     global clientes     #variables globales
     global barbero      
-
+    global lista_cortes
+    
     while True:     
         silla.acquire()     #el barbero espera a que el cliente se siente
         cortar.release()        #el barbero puede cortar
         barbero = 1     #el barbero esta cortando
-        print("Barbero esta cortando el pelo al cliente {0}".format(clientes))      
+        print("Barbero esta cortando el pelo al cliente {0}".format(lista_cortes))      
         time.sleep(2)       #el barbero tarda 2 segundos en cortar
         cortado.release()    #el cliente puede irse
         barbero = 0    #el barbero termino de cortar
@@ -33,27 +35,37 @@ def cliente():  #funcion del cliente
 
     global clientes
     global barbero
-
+    global lista_cortes
+    
     while True: 
-        mutex.acquire()    #para controlar el numero de clientes
+        mutex.acquire()#para controlar el numero de clientes
+
         if clientes < 3:    #si hay menos de 3 clientes en la barberia
             clientes += 1   #se suma un cliente
-            print("\nCliente {} llega a la barberia".format(clientes))
+            lista_cortes += 1
+            print("\nCliente {} llega a la barberia".format(lista_cortes))
             silla.release()    #el cliente se sienta
             mutex.release()   #se libera el mutex
             cortar.acquire()    #el cliente espera a que el barbero lo atienda
-            print("\nCliente {} esta siendo atendido".format(clientes)) 
+            print("\nCliente {} esta siendo atendido".format(lista_cortes)) 
             cortado.acquire()   #el cliente espera a que el barbero termine de cortar
             mutex.acquire()    #se libera el mutex
-            
-            print("\nCliente {} se va de la barberia con corte nuevo".format(clientes))
+            clientes -= 1   #se resta un cliente
+            print("\nCliente {} se va de la barberia con corte nuevo".format(lista_cortes))
             mutex.release()   #se libera el mutex
         else:   #si hay mas de 3 clientes en la barberia
-            clientes += 1   #se suma un cliente
+            lista_cortes += 1   #se suma un cliente
             mutex.release()  #se libera el mutex
-            print("\nCliente {} se va de la barberia porque esta llena".format(clientes))
-            time.sleep(10)   #el cliente espera  segundos y vuelve a intentar entrar
-            
+            print("\nCliente {} se va de la barberia porque esta llena".format(lista_cortes))
+            time.sleep(5)   #el cliente espera  segundos y vuelve a intentar entrar
+            if barbero == 0:
+                clientes == 0
+                cliente()
+#quiero crear como una lista de espera que se vaya vaciando cuando el barbero va cortando el pelo a los clientes
+#y que cuando el barbero termine de cortar el pelo a un cliente, el siguiente cliente de la lista de espera se siente en la silla
+#y el barbero lo atiende
+
+
 def main():
     
     
@@ -64,7 +76,7 @@ def main():
     while True: 
         hilo_cliente = threading.Thread(target=cliente)   #se crea el hilo del cliente
         hilo_cliente.start()    #se inicia el hilo del cliente
-        time.sleep(10)   #el cliente llega cada 10 segundos
+        time.sleep(5)   #el cliente llega cada 10 segundos
 
 if __name__ == "__main__":
     main()
