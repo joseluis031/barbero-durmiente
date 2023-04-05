@@ -5,65 +5,65 @@ import time
 import random
 
 #semaforos
-silla = threading.Semaphore(1)
-cortar = threading.Semaphore(0)
-cortado = threading.Semaphore(0)
-mutex = threading.Semaphore(1)
+silla = threading.Semaphore(1)  #solo puede haber un cliente en la silla
+cortar = threading.Semaphore(0) #el barbero no puede cortar hasta que el cliente se siente
+cortado = threading.Semaphore(0)    #el cliente no puede irse hasta que el barbero termine de cortar
+mutex = threading.Semaphore(1)  #para controlar el numero de clientes
 
 #variables
-clientes = 0
-barbero = 0
+clientes = 0    #numero de clientes en la barberia
+barbero = 0 #estado del barbero
 
-def barbero():
+def barbero():  #funcion del barbero
 
-    global clientes
-    global barbero
+    global clientes     #variables globales
+    global barbero      
 
-    while True:
-        silla.acquire()
-        cortar.release()
-        barbero = 1
-        print("Barbero esta cortando el pelo")
-        time.sleep(2)
-        cortado.release()
-        barbero = 0
+    while True:     
+        silla.acquire()     #el barbero espera a que el cliente se siente
+        cortar.release()        #el barbero puede cortar
+        barbero = 1     #el barbero esta cortando
+        print("Barbero esta cortando el pelo")      
+        time.sleep(2)       #el barbero tarda 2 segundos en cortar
+        cortado.release()    #el cliente puede irse
+        barbero = 0    #el barbero termino de cortar
         
-def cliente():
+def cliente():  #funcion del cliente
     
 
     global clientes
     global barbero
 
-    while True:
-        mutex.acquire()
-        if clientes < 3:
-            clientes += 1
-            print("Cliente llega a la barberia")
-            silla.release()
-            mutex.release()
-            cortar.acquire()
-            print("Cliente esta siendo atendido")
-            cortado.acquire()
-            mutex.acquire()
-            clientes -= 1
-            print("Cliente se va de la barberia")
-            mutex.release()
-        else:
-            mutex.release()
-            print("Cliente se va de la barberia")
-            time.sleep(2)
+    while True: 
+        mutex.acquire()    #para controlar el numero de clientes
+        if clientes < 3:    #si hay menos de 3 clientes en la barberia
+            clientes += 1   #se suma un cliente
+            print("\nCliente llega a la barberia")
+            silla.release()    #el cliente se sienta
+            mutex.release()   #se libera el mutex
+            cortar.acquire()    #el cliente espera a que el barbero lo atienda
+            print("\nCliente esta siendo atendido") 
+            cortado.acquire()   #el cliente espera a que el barbero termine de cortar
+            mutex.acquire()    #se libera el mutex
+            clientes -= 1   #se resta un cliente
+            print("\nCliente se va de la barberia")
+            mutex.release()   #se libera el mutex
+        else:   #si hay mas de 3 clientes en la barberia
+            mutex.release()  #se libera el mutex
+            print("\nCliente se va de la barberia")
+            time.sleep(2)   #el cliente espera 2 segundos y vuelve a intentar entrar
             
 def main():
     
     
     
-    hilo_barbero = threading.Thread(target=barbero)
-    hilo_barbero.start()
-    
-    while True:
-        hilo_cliente = threading.Thread(target=cliente)
-        hilo_cliente.start()
-        time.sleep(2)
+    hilo_barbero = threading.Thread(target=barbero)  #se crea el hilo del barbero
+    hilo_barbero.start()    #se inicia el hilo del barbero
+
+    while True: 
+        hilo_cliente = threading.Thread(target=cliente)   #se crea el hilo del cliente
+        hilo_cliente.start()    #se inicia el hilo del cliente
+        time.sleep(2)   #el cliente llega cada 2 segundos
 
 if __name__ == "__main__":
     main()
