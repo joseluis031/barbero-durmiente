@@ -77,6 +77,3 @@ def main():
         hilo_cliente = threading.Thread(target=cliente)   #se crea el hilo del cliente
         hilo_cliente.start()    #se inicia el hilo del cliente
         time.sleep(5)   #el cliente llega cada 5 segundos
-
-if __name__ == "__main__":
-    main()
