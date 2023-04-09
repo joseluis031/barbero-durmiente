@@ -95,3 +95,42 @@ if __name__ == "__main__":
     main()
 ```
 
+
+
+## Ejecucion del codigo
+
+```
+Cliente 1 llega a la barberia
+
+Cliente 1 esta siendo atendido
+
+Barbero esta cortando el pelo al cliente 1
+
+Cliente 1 se va de la barberia con corte nuevo
+
+Cliente 2 llega a la barberia
+
+Cliente 2 esta siendo atendido
+
+Barbero esta cortando el pelo al cliente 2
+Cliente 2 se va de la barberia con corte nuevo
+```
+
+
+```
+Cliente 17 llega a la barberia
+
+Barbero esta cortando el pelo al cliente 17
+
+Cliente 17 esta siendo atendido
+Cliente 17 se va de la barberia con corte nuevo
+
+
+Cliente 18 llega a la barberia
+
+Cliente 18 se va de la barberia porque esta llena
+
+Cliente 19 se va de la barberia porque esta llena
+
+Cliente 20 se va de la barberia porque esta llena
+```
